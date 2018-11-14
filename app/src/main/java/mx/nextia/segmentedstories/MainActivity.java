@@ -55,8 +55,28 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void revealButtonBack(){
+        btn.setElevation(1f);
+
+        int x = reveal.getWidth();
+        int y = reveal.getHeight();
+
+        int cx = (int) (getFabWidth() / 2 + btn.getX());
+        int cy = (int) (getFabWidth() / 2 + btn.getY());
+
+        float finalRadius = Math.max(x,y) * 1.2f;
+        Animator revealer = ViewAnimationUtils
+                .createCircularReveal(reveal, cx, cy, finalRadius, getFabWidth());
+        revealer.setDuration(250);
+        revealer.start();
+    }
+
     public void fadeoutBtn(){
         btn.animate().alpha(0f).setDuration(100).start();
+    }
+
+    public void fadeInBtn(){
+        btn.animate().alpha(1f).setDuration(100).start();
     }
 
     private int getFabWidth(){
@@ -89,11 +109,37 @@ public class MainActivity extends AppCompatActivity {
         welcomeThread.start();
     }
 
+    public void waitThread2(){
+        Thread welcomeThread = new Thread() {
+
+            @Override
+            public void run() {
+                try {
+                    super.run();
+                    sleep(250);  //Delay of .1 seconds
+                } catch (Exception e) {
+
+                } finally {
+                    MainActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            reveal.setVisibility(View.INVISIBLE);
+                        }
+                    });
+                }
+            }
+        };
+        welcomeThread.start();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == 1 && resultCode == RESULT_OK){
-            btn.setAlpha(1f);
-            reveal.setVisibility(View.INVISIBLE);
+            //btn.setAlpha(1f);
+            //reveal.setVisibility(View.INVISIBLE);
+            revealButtonBack();
+            fadeInBtn();
+            waitThread2();
         }
     }
 }

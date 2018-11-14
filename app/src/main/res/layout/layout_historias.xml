@@ -8,12 +8,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="center"/>
-    
+
+    <!--
+    <VideoView
+        android:id="@+id/videoview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"/>
+        -->
+
+    <mx.nextia.segmentedstories.modelos.TextureVideoView
+        android:id="@+id/videoview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        />
 
     <ImageView
         android:id="@+id/iv_back"
         android:layout_width="100dp"
         android:layout_height="match_parent" />
+
     <com.carlosmuvi.segmentedprogressbar.SegmentedProgressBar
         android:id="@+id/segmented_progress"
         android:layout_width="match_parent"
