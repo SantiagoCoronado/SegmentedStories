@@ -2,6 +2,7 @@ package mx.nextia.segmentedstories.modelos;
 
 import android.app.Activity;
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
@@ -97,6 +98,7 @@ public class VIewPagerAdapter extends PagerAdapter implements View.OnTouchListen
                 }
             });
         }else if (al_stories_user.get(position).al_historias.get(0).tipo == 2){
+
             videoView.setVisibility(View.VISIBLE);
             //videoView.setVideoPath(al_stories_user.get(position).al_historias.get(0).url);
             //videoView.start();
@@ -105,6 +107,8 @@ public class VIewPagerAdapter extends PagerAdapter implements View.OnTouchListen
             bar.resume();
             newTimer(al_stories_user.get(position).al_historias.get(0).duration);
             startmillis = System.currentTimeMillis();
+            Log.i("MEDICION_startmillis", String.valueOf(startmillis-startmillis));
+
         }
 
         iv_back.setOnTouchListener(new View.OnTouchListener() {
@@ -154,6 +158,9 @@ public class VIewPagerAdapter extends PagerAdapter implements View.OnTouchListen
         });
         ((ViewPager)container).addView(rl);
 
+        cStop = 0;
+        cStart = 0;
+
         return rl;
     }
 
@@ -163,7 +170,12 @@ public class VIewPagerAdapter extends PagerAdapter implements View.OnTouchListen
             case MotionEvent.ACTION_DOWN:
                 bar.pause();
                 cStart = System.currentTimeMillis();
-                start_pause = cStart - startmillis;
+                Log.i("MEDICION_cStart", String.valueOf(cStart-startmillis));
+                if(cStop == 0) {
+                    start_pause = cStart - startmillis;
+                }else{
+                    start_pause = start_pause + (cStart-cStop);
+                }
                 Log.i("START_PAUSE", String.valueOf(start_pause));
                 globalTimer.cancel();
                 if(videoView.getVisibility() == View.VISIBLE){
@@ -180,6 +192,7 @@ public class VIewPagerAdapter extends PagerAdapter implements View.OnTouchListen
                 //bar.resume();
                 rawYEnd = event.getRawY();
                 cStop = System.currentTimeMillis();
+                Log.i("MEDICION_cStop", String.valueOf(cStop-startmillis));
                 // aqui
                 float deltaTime = (float) (cStop - cStart);
                 float deltaDistance = rawYEnd - rawYStart;
@@ -187,10 +200,10 @@ public class VIewPagerAdapter extends PagerAdapter implements View.OnTouchListen
                 Log.i("VELOCITY", String.valueOf(velocity));
 
                 if(velocity > 3f){
+                    videoView.mMediaPlayer.reset();
                     Activity activity = (Activity)context;
                     activity.finish();
                     activity.overridePendingTransition(0,0);
-                    videoView.mMediaPlayer.reset();
                 }
 
                 Log.i("TIMER_START", String.valueOf(cStart));
@@ -244,6 +257,7 @@ public class VIewPagerAdapter extends PagerAdapter implements View.OnTouchListen
 
     public void storesLogic(){
         if (counter < al_stories_user.get(positionUser).al_historias.size()) {
+            cStop = 0;
             //globalTimer.cancel();
             bar.setCompletedSegments(counter);
             Log.i("URL", al_stories_user.get(positionUser).al_historias.get(counter).url);
@@ -283,7 +297,7 @@ public class VIewPagerAdapter extends PagerAdapter implements View.OnTouchListen
 
     public void stopVideo(){
         bar.reset();
-        videoView.stop();
+        videoView.mMediaPlayer.reset();
     }
 
 

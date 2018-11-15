@@ -125,7 +125,7 @@ public class TextureVideoView extends TextureView implements TextureView.Surface
                 break;
             case CENTER_CROP:
                 pivotPointX = (int) (viewWidth / 2);
-                pivotPointY = (int) (viewHeight / 2);
+                pivotPointY = (int) (viewHeight /2);
                 break;
             default:
                 pivotPointX = (int) (viewWidth / 2);
@@ -134,7 +134,9 @@ public class TextureVideoView extends TextureView implements TextureView.Surface
         }
 
         Matrix matrix = new Matrix();
-        matrix.setScale(scaleX, scaleY, pivotPointX, pivotPointY);
+        //matrix.setScale(scaleX, scaleY, pivotPointX, pivotPointY);
+        matrix.setScale(scaleX/scaleY,1,pivotPointX,pivotPointY);
+        Log.i("SCALE", "Y: " + String.valueOf(scaleY) + ", X: " + String.valueOf(scaleX));
 
         setTransform(matrix);
     }
